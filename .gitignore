@@ -1,53 +1,30 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-*.test
-*.out
-
-# IDE files
-.vscode/
+# IDE
 .idea/
+.vscode/
 *.swp
 *.swo
-*~
 
-# OS generated files
+# Go
+/bin/
+/pkg/
+/src/go.mod
+/src/go.sum
+
+# Protobuf temporary files
+*.pb.go
+*_grpc.pb.go
+
+# OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Go specific
-/go/bin/
-/go/pkg/
-
-# Temporary files
-tmp/
-temp/
-
-# Log files
+# Logs
 *.log
+
+# Build artifacts
+/build/
+/dist/
 
 # Environment files
 .env
 .env.local
-.env.*.local
-
-# Backup files
-*.bak
-*.backup
-
-# Protobuf compilation cache
-*.pb.go-*
-
-# But we DO want to include generated .pb.go files!
-# So we don't ignore *.pb.go
-
-# Development tools
-.devcontainer/
