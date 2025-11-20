@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package userprofile;
 
-option go_package = "github.com/Brrocat/car-sharing/proto/userprofile";
+option go_package = "github.com/Brrocat/car-sharing;userprofile";
 
 import "google/protobuf/timestamp.proto";
 

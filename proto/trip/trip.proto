@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package trip;
 
-option go_package = "github.com/Brrocat/car-sharing-protos/proto/trip";
+option go_package = "github.com/Brrocat/car-sharing-protos;trip";
 
 import "google/protobuf/timestamp.proto";
 import "telemetry/telemetry.proto";
