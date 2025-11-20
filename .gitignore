@@ -1,0 +1,53 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Go specific
+/go/bin/
+/go/pkg/
+
+# Temporary files
+tmp/
+temp/
+
+# Log files
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.backup
+
+# Protobuf compilation cache
+*.pb.go-*
+
+# But we DO want to include generated .pb.go files!
+# So we don't ignore *.pb.go
+
+# Development tools
+.devcontainer/
