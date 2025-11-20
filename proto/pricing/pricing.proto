@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package pricing;
+
+option go_package = "github.com/Brrocat/car-sharing-protos/proto/pricing";
+
+import "google/protobuf/timestamp.proto";
+
+enum VehicleType {
+  ECONOMY = 0;
+  STANDARD = 1;
+  PREMIUM = 2;
+  SUV = 3;
+}
+
+enum RateType {
+  DISTANCE = 0;
+  TIME = 1;
+  FIXED = 2;
+}
+
+message PricingRule {
+  string rule_id = 1;
+  VehicleType vehicle_type = 2;
+  RateType rate_type = 3;
+  double base_rate = 4;
+  double rate_per_km = 5;
+  double rate_per_minute = 6;
+  double minimum_fare = 7;
+  map<string, double> multipliers = 8; // peak_hours, weekend, etc.
+  google.protobuf.Timestamp effective_form = 9;
+  google.protobuf.Timestamp effective_to = 10;
+  bool is_active = 11;
+}
+
+message CalculatePriceRequest {
+  string trip_id = 1;
+  double distance_km = 2;
+  int32 duration_minutes = 3;
+  VehicleType vehicle_type = 4;
+  google.protobuf.Timestamp start_time = 5;
+  google.protobuf.Timestamp end_time = 6;
+  string user_id = 7; // for user-specific pricing
+  repeated string additional_services = 8;
+}
+
+message CalculatePriceResponse {
+  double total_amount = 1;
+  string currency = 2;
+  string pricing_breakdown = 3; // JSON string detailed breakdown
+  repeated PricingRule applied_rules = 4;
+}
+
+message GetPriceEstimateRequest {
+  VehicleType vehicle_type = 1;
+  double estimated_distance_km = 2;
+  int64 estimated_duration_minutes = 3;
+  google.protobuf.Timestamp start_time = 4;
+}
+
+message GetPriceEstimateResponse {
+  double estimated_amount = 1;
+  string currency = 2;
+  double amount_range_min = 3;
+  double amount_range_max= 4;
+}
+
+message GetPricingRulesRequest {
+  VehicleType vehicle_type = 1; // optional filter
+  bool active_only = 2;
+}
+
+message GetPricingRulesResponse {
+  repeated PricingRule rules = 1;
+}
+
+message UpdatePricingRulesRequest {
+  repeated PricingRule rules = 1;
+}
+
+message UpdatePricingRulesResponse {
+  bool success = 1;
+  int32 updated_count = 2;
+}
+
+service PricingService {
+  rpc CalculatePrice(CalculatePriceRequest) returns (CalculatePriceResponse);
+  rpc GetPriceEstimate(GetPriceEstimateRequest) returns (GetPriceEstimateResponse);
+  rpc GetPricingRules(GetPricingRulesRequest) returns (GetPricingRulesResponse);
+  rpc UpdatePricingRules(UpdatePricingRulesRequest) returns (UpdatePricingRulesResponse);
+}

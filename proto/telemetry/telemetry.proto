@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package telemetry;
+
+option go_package = "github.com/Brrocat/car-sharding-protos/proto/telemetry";
+
+import "google/protobuf/timestamp.proto";
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  double altitude = 3;
+  float accuracy = 4; // accuracy in meters
+}
+
+message VehicleMetrics {
+  double speed = 1; // km/h
+  double fuel_level = 2; // 0.0 to 1.0
+  double battery_level = 3; // 0.0 to 1.0
+  double mileage = 4; // total km
+  double engine_temperature = 5; // Celsius
+  double tire_pressure_front_left = 6; // bar
+  double tire_pressure_front_right = 7;
+  double tire_pressure_rear_left = 8;
+  double tire_pressure_rear_right = 9;
+  bool engine_running = 10;
+  bool doors_locked = 11;
+  bool headlights_on = 12;
+}
+
+message DiagnosticCodes {
+  repeated string dtc_codes = 1; // Diagnostic Trouble Codes
+  string system_status = 2;
+  map<string, string> sensor_readings = 3;
+}
+
+message TelemetryData {
+  string vehicle_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  Location location = 3;
+  VehicleMetrics metrics = 4;
+  DiagnosticCodes diagnostics = 5;
+  string session_id = 6; // for correlating data in a trip
+}
+
+message TelemetryBatchRequest {
+  repeated TelemetryData telemetry_data = 1;
+}
+
+message TelemetryResponse {
+  bool success = 1;
+  string message = 2;
+  int32 processed_count = 3; // for batch requests
+}
+
+service TelemetryService {
+  rpc SubmitTelemetry(stream TelemetryData) returns (TelemetryResponse);
+  rpc SubmitTelemetryBatch(TelemetryBatchRequest) returns (TelemetryResponse);
+}

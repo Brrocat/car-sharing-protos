@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package payment;
+
+option go_package = "github.com/Brrocat/car-sharing-protos/proto/payment";
+
+import "google/protobuf/timestamp.proto";
+
+enum PaymentStatus {
+  PENDING = 0;
+  PROCESSING = 1;
+  COMPLETED = 2;
+  FAILED = 3;
+  REFUNDED = 4;
+  CANCELLED = 5;
+}
+
+enum PaymentMethod {
+  CREDIT_CARD = 0;
+  DEBIT_CARD = 1;
+  DIGITAL_WALLED = 2;
+  BANK_TRANSFER = 3;
+}
+
+message Payment {
+  string payment_id = 1;
+  string user_id = 2;
+  string trip_id = 3;
+  string booking_id = 4;
+  double amount = 5;
+  string currency = 6;
+  PaymentStatus status = 7;
+  PaymentMethod method = 8;
+  string payment_gateway_id = 9;
+  google.protobuf.Timestamp created_id = 10;
+  google.protobuf.Timestamp updated_id = 11;
+  google.protobuf.Timestamp processed_id = 12;
+  string error_message = 13;
+}
+
+message CreatePaymentRequest {
+  string user_id = 1;
+  string trip_id = 2;
+  string booking_id = 3;
+  double amount = 4;
+  string currency = 5;
+  PaymentMethod method = 6;
+  map<string, string> payment_details = 7; // cart details, wallet info, etc.
+}
+
+message CreatePaymentResponse {
+  Payment payment = 1;
+  string payment_url = 2; // for redirect-based payment flows
+}
+
+message ProcessedPaymentRequest {
+  string payment_id = 1;
+}
+
+message ProcessedPaymentResponse {
+  Payment payment = 1;
+}
+
+message RefundPaymentRequest {
+  string payment_id = 1;
+  double amount = 2; // partial or full refund
+  string reason = 3;
+}
+
+message RefundPaymentResponse {
+  Payment payment = 1;
+  string refund_id = 2;
+}
+
+message GetPaymentRequest {
+  string payment_id = 1;
+}
+
+message GetPaymentResponse {
+  Payment payment = 1;
+}
+
+message ListUserPaymentsRequest {
+  string user_id = 1;
+  PaymentStatus status = 2; // optional filter
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListUserPaymentsResponse {
+  repeated Payment payment = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+service PaymentService {
+  rpc CreatePayment(CreatePaymentRequest) returns (CreatePaymentResponse);
+  rpc ProcessPayment(ProcessedPaymentRequest) returns (ProcessedPaymentResponse);
+  rpc RefundPayment(RefundPaymentRequest) returns (RefundPaymentResponse);
+  rpc GetPayment(GetPaymentRequest) returns (GetPaymentResponse);
+  rpc ListUserPayments(ListUserPaymentsRequest) returns (ListUserPaymentsResponse);
+}

@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package vehicle;
+
+option go_package = "github.com/Brrocat/car-sharing-protos/proto/vehicle";
+
+import "google/protobuf/timestamp.proto";
+
+enum VehicleStatus {
+  AVAILABLE = 0;
+  IS_USE = 1;
+  MAINTENANCE = 2;
+  OUT_OF_SERVICE = 3;
+  RESERVED = 4;
+}
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  string address = 3;
+}
+
+message Vehicle {
+  string vehicle_id = 1;
+  string license_plate = 2;
+  string make = 3;
+  string model = 4;
+  int32 year = 5;
+  string color = 6;
+  VehicleStatus status = 7;
+  Location current_location = 8;
+  double fuel_level = 9; // 0.0 to 1.0 or 0-100%
+  double mileage = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message GetVehicleRequest {
+  string vehicle_id = 1;
+}
+
+message GetVehicleResponse {
+  Vehicle vehicle = 1;
+}
+
+message ListVehiclesRequest {
+  VehicleStatus status = 1; // optional filter
+  Location location = 2; // optional location filter
+  double radius_km = 3; // search radius in kilometers
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+message ListVehiclesResponse {
+  repeated Vehicle vehicles = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message CreateVehicleRequest {
+  string licence_plate = 1;
+  string make = 2;
+  string model = 3;
+  int32 year = 4;
+  string color = 5;
+  Location initial_location = 6;
+}
+
+message CreateVehicleResponse {
+  Vehicle vehicle = 1;
+}
+
+message UpdateVehicleStatusRequest {
+  string vehicle_id = 1;
+  VehicleStatus status = 2;
+}
+
+message UpdateVehicleStatusResponse {
+  Vehicle vehicle_id = 1;
+}
+
+message UpdateVehicleLocationRequest {
+  string vehicle = 1;
+  Location location = 2;
+}
+
+message UpdateVehicleLocationResponse {
+  Vehicle vehicle = 1;
+}
+
+service VehicleService {
+  rpc GetVehicle(GetVehicleRequest) returns (GetVehicleResponse);
+  rpc ListVehicles(ListVehiclesRequest) returns (ListVehiclesResponse);
+  rpc CreateVehicle(CreateVehicleRequest) returns (CreateVehicleResponse);
+  rpc UpdateVehicleStatus(UpdateVehicleStatusRequest) returns (UpdateVehicleStatusResponse);
+  rpc UpdateVehicleLocation(UpdateVehicleLocationRequest) returns (UpdateVehicleLocationResponse);
+}

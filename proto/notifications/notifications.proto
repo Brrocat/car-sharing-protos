@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package notifications;
+
+option go_package = "github.com/Brrocat/car-sharing-protos/proto/notifications";
+
+import "google/protobuf/timestamp.proto";
+
+enum NotificationType {
+  BOOKING_CONFIRMED = 0;
+  BOOKING_CANCELLED = 1;
+  TRIP_STARTED = 2;
+  TRIP_COMPLETED = 3;
+  PAYMENT_RECEIVED = 4;
+  PAYMENT_FAILED = 5;
+  VEHICLE_AVAILABLE = 6;
+  PROMOTIONAL = 7;
+  SYSTEM_ALERT = 8;
+}
+
+enum NotificationChannel {
+  PUSH = 0;
+  SMS = 1;
+  EMAIL = 2;
+  IN_APP = 3;
+}
+
+message Notification {
+  string notification_id = 1;
+  string user_id = 2;
+  NotificationType type = 3;
+  string title = 4;
+  string message = 5;
+  map<string, string> data = 6; // additional data for deep linking
+  repeated NotificationChannel channels = 7;
+  bool is_read = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp sent_at = 10;
+  google.protobuf.Timestamp read_at = 11;
+}
+
+message SendNotificationRequest {
+  string user_id = 1;
+  NotificationType type = 2;
+  string title = 3;
+  string message = 4;
+  map<string, string> data = 5;
+  repeated NotificationChannel channels = 6;
+}
+
+message SendNotificationResponse {
+  bool success = 1;
+  string notification_id = 2;
+  map<string, bool> channel_status = 3; // delivery status per channel
+}
+
+message GetNotificationRequest {
+  string notification_id = 1;
+}
+
+message GetNotificationResponse {
+  Notification notification = 1;
+}
+
+message ListUserNotificationsRequest {
+  string user_id = 1;
+  bool unread_only = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListUserNotificationsResponse {
+  repeated Notification notifications = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+  int32 unread_count = 4;
+}
+
+message MarkAsReadRequest {
+  string notification_id = 1;
+}
+
+message MarkAsReadResponse {
+  bool success = 1;
+}
+
+service NotificationsService {
+  rpc SendNotification(SendNotificationRequest) returns (SendNotificationResponse);
+  rpc GetNotification(GetNotificationRequest) returns (GetNotificationResponse);
+  rpc ListUserNotifications(ListUserNotificationsRequest) returns (ListUserNotificationsResponse);
+  rpc MarkAsRead(MarkAsReadRequest) returns (MarkAsReadResponse);
+}

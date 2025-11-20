@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package trip;
+
+option go_package = "github.com/Brrocat/car-sharing-protos/proto/trip";
+
+import "google/protobuf/timestamp.proto";
+import "telemetry/telemetry.proto";
+
+
+enum TripStatus {
+  CREATED = 0;
+  IN_PROGRESS = 1;
+  PAUSED = 2;
+  COMPLETED = 3;
+  CANCELLED = 4;
+}
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  string address = 3;
+}
+
+message Trip {
+  string trip_id = 1;
+  string user_id = 2;
+  string vehicle_id = 3;
+  TripStatus status = 4;
+  Location start_location = 5;
+  Location end_location = 6;
+  google.protobuf.Timestamp start_time = 7;
+  google.protobuf.Timestamp end_time = 8;
+  double distance_km = 9;
+  double total_cost = 10;
+  string currency = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
+message StartTripRequest {
+  string user_id = 1;
+  string vehicle_id = 2;
+  Location start_location = 3;
+  string booking_id = 4; // optional, if started from booking
+}
+
+message StartTripResponse {
+  Trip trip = 1;
+}
+
+message UpdateTripRequest {
+  string trip_id = 1;
+  telemetry.TelemetryData telemetry_data = 2;
+  Location current_location = 3;
+}
+
+message UpdateTripResponse {
+  Trip trip = 1;
+}
+
+message EndTripRequest {
+  string trip_id = 1;
+  Location end_location = 2;
+  double final_distance_km = 3;
+}
+
+message EndTripResponse {
+  Trip trip = 1;
+}
+
+message GetTripRequest {
+  string trip_id = 1;
+}
+
+message GetTripResponse {
+  Trip trip = 1;
+}
+
+message GetActiveTripRequest {
+  string user_id = 1;
+}
+
+message GetActiveTripResponse {
+  Trip trip = 1;
+}
+
+message CancelTripRequest {
+  string trip_id = 1;
+  string reason = 2;
+}
+
+message CancelTripResponse {
+  bool success = 1;
+}
+
+service TripService {
+  rpc StartTrip(StartTripRequest) returns (StartTripResponse);
+  rpc UpdateTrip(UpdateTripRequest) returns (UpdateTripResponse);
+  rpc EndTrip(EndTripRequest) returns (EndTripResponse);
+  rpc GetTrip(GetTripRequest) returns (GetTripResponse);
+  rpc GetActiveTrip(GetActiveTripRequest) returns (GetActiveTripResponse);
+  rpc CancelTrip(CancelTripRequest) returns (CancelTripResponse);
+}
