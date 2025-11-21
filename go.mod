@@ -1,9 +1,8 @@
-module car-sharing-protos
+module github.com/Brrocat/car-sharing-protos
 
 go 1.25.4
 
 require (
-	github.com/Brrocat/car-sharing-protos v0.0.0
 	google.golang.org/grpc v1.77.0
 	google.golang.org/protobuf v1.36.10
 )
