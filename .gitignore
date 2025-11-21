@@ -4,15 +4,9 @@
 *.swp
 *.swo
 
-# Go
+# Go - убрали исключение для *.pb.go
 /bin/
 /pkg/
-/src/go.mod
-/src/go.sum
-
-# Protobuf temporary files
-*.pb.go
-*_grpc.pb.go
 
 # OS
 .DS_Store
@@ -28,3 +22,6 @@ Thumbs.db
 # Environment files
 .env
 .env.local
+
+# Временные файлы протокомпиляции (если используются)
+/tmp/
