@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package booking;
 
-option go_package = "github.com/Brrocat/car-sharing-protos;booking";
+option go_package = "github.com/Brrocat/car-sharing-protos/proto/booking";
 
 import "google/protobuf/timestamp.proto";
 

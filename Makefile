@@ -2,22 +2,21 @@
 
 PROTOC := protoc
 PROTO_ROOT := proto
-OUTPUT_DIR := .
 
 proto:
 	@echo "Generating all protobuf code..."
 	$(PROTOC) \
 		--proto_path=$(PROTO_ROOT) \
-		--go_out=$(OUTPUT_DIR) \
-		--go_opt=module=github.com/Brrocat/car-sharing-protos \
-		--go-grpc_out=$(OUTPUT_DIR) \
-		--go-grpc_opt=module=github.com/Brrocat/car-sharing-protos \
+		--go_out=$(PROTO_ROOT) \
+		--go_opt=paths=source_relative \
+		--go-grpc_out=$(PROTO_ROOT) \
+		--go-grpc_opt=paths=source_relative \
 		$(shell find $(PROTO_ROOT) -name "*.proto")
 	@echo "Protobuf code generation completed"
 
 clean:
 	@echo "Cleaning generated protobuf files..."
-	find . -name "*.pb.go" -not -path "./$(PROTO_ROOT)/*" -delete
+	find $(PROTO_ROOT) -name "*.pb.go" -delete
 	@echo "Clean completed"
 
 deps:
